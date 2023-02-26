@@ -5,9 +5,11 @@
 &emsp;&emsp; 为了测试该方法的效果，在来自各种PDE的模拟数据上训练模型，这些PDE具有作为不受控变量的变化的动态参数。数值实验表明，该方法可以准确地识别相关参数，并从原始甚至有噪声的时空数据中提取它们（用大约10%的附加噪声进行测试）。这些提取的参数与用于生成数据集的地面真实物理参数有很好的相关性（线性度$R^2>0.95$）。时空系统中可解释的潜在参数的方法将能够更好地分析和理解真实世界的现象和数据集，这些现象和数据往往具有未知和不受控制的变量，这些变量会改变系统动力学，并导致难以分辨的变化行为。<br>
 
 ## 二、数据集和数据获取
-&emsp;&emsp; 本文中的数据是由PDE产生的时间序列数据，数据结构一对为时间序列$(\{x_t\}_{t=0}^{T_x}, \{y_t\}_{t=0}^{T_y})$，其中$\{x_t\}_{t=0}^{T_x}$为编码器的输入序列，$\{y_t\}_{t=0}^{T_y}$为提供初始条件的目标序列。本文中共使用两个一维和一个二维PDE产生的时间序列，分别是：<br>
+&emsp;&emsp; 本文中的数据是由PDE产生的时间序列数据，数据结构一对为时间序列 $(\{x_t\}_{t=0}^{T_x}, \{y_t\}_{t=0}^{T_y})$，其中 $\{x_t\}_{t=0}^{T_x}$为编码器的输入序列， $\{y_t\}_{t=0}^{T_y}$为提供初始条件的目标序列。本文中共使用两个一维和一个二维PDE产生的时间序列，分别是：<br>
 **（1）1D-Kurmoto–Sivashinsky equation** <br>
+
 $$\frac{\partial u}{\partial t}=-\gamma \partial_x^4u-\partial_x^2u-u\partial_xu $$
+
 其中$\gamma$是粘度阻尼参数；数据集可由运行下方**脚本** 获取。
 
 ~~~shell
@@ -20,7 +22,9 @@ mv KS_dataset_size5000.npz VAE/data
 <br>
 
 **（2）1D-nonlinear Schrödinger equation**
+
 $$i\frac{\partial \psi}{\partial t}=-\frac{1}{2}\partial_x^2\psi+\kappa|\psi|^2\psi$$
+
 其中$\kappa$是能量系数；数据集可由运行下方**脚本** 获取<br>
 
 
@@ -35,7 +39,9 @@ mv NLSE_dataset_size5000.npz VAE/data
 <br>
 
 **（3）2D convection–diffusion equation**<br>
+
 $$\frac{\partial u}{\partial t}=D\nabla^2u-v\cdot \nabla u$$
+
 其中$D$是常数，$v$是速度场的相关对流项；数据集可由运行下方**脚本** 获取<br>
 
 ~~~shell
@@ -50,7 +56,7 @@ mv CD_dataset_size1000.npz VAE/data
     ![](https://bj.bcebos.com/v1/ai-studio-match/file/bdc4cca0fafa4132a1c9f744844cb8939fb04b33e780435bb4e1ddaa3177e821?authorization=bce-auth-v1%2F5cfe9a5e1454405eb2a975c43eace6ec%2F2023-02-22T07%3A35%3A05Z%2F-1%2F%2F1183c102129546365e4f5ec617134b13771ff636f0bad0a652cb91aae3ed42d7)<br>
  一维模型代码如下：
  ## 四、模型代码实现
-&emsp; &emsp; 经过上述讨论，已经对整个VAE有了基本的了解，以**一维模型**为例详细阐述模型的各个模块，具体实现细节由下面代码给出
+&emsp; &emsp; 经过上述讨论，已经对整个VAE有了基本的了解，以**一维模型**为例详细阐述模型的各个模块，具体实现细节由`models/pde1d.py`代码给出
 
 &emsp;&emsp;动态卷积的实现难点在于`torch.Tensor`中的`unfold`方法`paddle.Tensor`没有对应，需要自己实现，下面的`unfold`函数是针对三维和四维张量实现的对应`torch.Tensor.unfold`算子
 ~~~python
