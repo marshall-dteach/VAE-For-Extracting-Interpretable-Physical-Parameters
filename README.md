@@ -53,7 +53,7 @@ mv CD_dataset_size1000.npz VAE/data
 &emsp; &emsp; 使用无监督方法来提取模型关键参数，使用变分自编码器模型（VAE）作为本次实验的模型。VAE由编码器和解码器构成，往往用来提取关键参数信息并进行预测，是无监督学习方法的一个常用的方法。有关VAE的相关知识，可以去学习[北京邮电大学鲁鹏老师的课程](https://www.bilibili.com/video/BV1V54y1B7K3?p=14&vd_source=2cdcfe9c52913dcc5a32a695b1b96162)。<br>
 &emsp; &emsp; 本次实验中，编码器用来提取关键参数（以正态分布的期望和方差形式给出），本次实验中编码器由卷积神经网络搭建；解码器利用编码器提取的参数（其网络的部分权重是由提取的参数所决定的）进行解码，来模拟给定初值条件和边界条件的系统。使用解码器的预测结果与实际结果构建损失函数，以达到**解码器推动编码器提取有用参数的目的**。<br>
 &emsp; &emsp; 论文中VAE的动态编码器（<em>dynamics encoder</em>）是用空洞卷积（<em>dilated conblution</em>）实现的，输入经过一系列卷积后的结果分别经过两个并列的卷积层分别生成待提取参数均值和对数方差（**VAE假定待提取参数服从标准正态分布**）；传递解码器（<em>propagating decoder</em>）是由动态卷积组成，其权重和偏置是由关键参数经过隐藏层生成的，与传统VAE不同本文中的解码器的输入不仅有提取出的关键参数，而且还有初值条件，解码器的输出为预测结果。整个模型的结果如下图所示<br>
-    ![](https://bj.bcebos.com/v1/ai-studio-match/file/bdc4cca0fafa4132a1c9f744844cb8939fb04b33e780435bb4e1ddaa3177e821?authorization=bce-auth-v1%2F5cfe9a5e1454405eb2a975c43eace6ec%2F2023-02-22T07%3A35%3A05Z%2F-1%2F%2F1183c102129546365e4f5ec617134b13771ff636f0bad0a652cb91aae3ed42d7)<br>
+    ![](README.assets/Architrcture.png)<br>
  一维模型代码如下：
  ## 四、模型代码实现
 &emsp; &emsp; 经过上述讨论，已经对整个VAE有了基本的了解，以**一维模型**为例详细阐述模型的各个模块，具体实现细节由`models/pde1d.py`代码给出
@@ -128,4 +128,4 @@ python run.py input_files/NLSE_test.json
 ![](README.assets/result.png)
 <br>
 &emsp;&emsp;上图结果与原文对应的很好，可以解释的参数都是一个，其他方程获得的结果也可以对应的可视化出来，都可以和原文有着很好的对应。原文所有结果如下：<br>
-![原文的结果](https://bj.bcebos.com/v1/ai-studio-match/file/bc16dd3e9dfd49d09f6fb9073d28e389a892af3aa3234ae9ac66bcd567e47618?authorization=bce-auth-v1%2F5cfe9a5e1454405eb2a975c43eace6ec%2F2023-02-22T07%3A35%3A20Z%2F-1%2F%2F9e89824e875e07d7c2993bb1ecdcb8bd88245aa75699a4d2f0cacc82138c2361)
+![原文的结果](README.assets/final.png)
